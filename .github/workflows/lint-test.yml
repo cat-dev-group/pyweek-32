@@ -90,7 +90,7 @@ jobs:
       - name: Run flake8
         run: "flake8 --extend-exclude=.cache/ \
         --format=\"::error file=%(path)s,line=%(row)d,col=%(col)d::\
-        [flake8] %(code)s: %(text)s\n%(path)s %(row)d:%(col)d\""
+        [flake8] %(path)s %(row)d:%(col)d: %(code)s: %(text)s\""
 
       # Run Black using it's provided GitHub action
       - name: Run Black
