@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# Include required files
+!pyweek/
+!pyproject.toml
+!poetry.lock
