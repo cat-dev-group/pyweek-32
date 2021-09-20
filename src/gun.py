@@ -9,5 +9,6 @@ class Gun:
     mag_size: int
     reload_time: int
     bullets_per_shot: int
+    shots_per_second: int
     path_to_sprite: str
     explosive_bullets: bool = False
