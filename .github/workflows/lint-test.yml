@@ -14,9 +14,8 @@ jobs:
   lint-test:
     runs-on: ubuntu-latest
     env:
-      # Configure pip to cache dependencies and do a user install
+      # Configure pip to cache dependencies
       PIP_NO_CACHE_DIR: false
-      PIP_USER: 1
 
       # Make sure package manager does not use virtualenv
       POETRY_VIRTUALENVS_CREATE: false
@@ -77,7 +76,7 @@ jobs:
       # separate actions. As pre-commit does not support user installs, we set
       # PIP_USER=0 to not do a user install.
       - name: Run pre-commit hooks
-        run: export PIP_USER=0; SKIP=flake8,black,isort pre-commit run --all-files
+        run: SKIP=flake8,black,isort pre-commit run --all-files
 
       # Run flake8 and have it format the linting errors in the format of
       # the GitHub Workflow command to register error annotations. This
