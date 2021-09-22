@@ -8,7 +8,6 @@ SCREEN_TITLE = "SCREAMING_SNAKE_SHOOTER"
 SCALING = 1.0
 
 
-# class to handle moving enemies
 class FlyingEnemy(arcade.Sprite):
     """Base class for moving enemies."""
 
