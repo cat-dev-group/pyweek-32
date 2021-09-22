@@ -4,6 +4,7 @@ import arcade
 
 PLAYER_SCALE = 1.0
 ENEMY_SCALE = 0.75
+DEFAULT_SCALE = 1.0
 
 
 class FlyingEnemy(arcade.Sprite):
@@ -32,6 +33,7 @@ class SnakeShooter(arcade.Window):
         self.enemies_list = arcade.SpriteList()
         # TODO
         # add background / guns / bullets or other SpriteLists
+        self.bullets_list = arcade.SpriteList()
         # a list to hold all sprites
         self.all_sprites = arcade.SpriteList()
 
@@ -50,13 +52,14 @@ class SnakeShooter(arcade.Window):
         )  # set the initial position in the middle of the screen
         self.all_sprites.append(self.player)
 
+        self.paused = False
         # Scheduling Functions
         # TODO need to add some logic to define when / how to "spawn" enemies
         # schedule accepts an addition function for adding a sprite
         # and a time between adding enemies
-        arcade.schedule(self.add_enemy, 0.5)
-
-        self.paused = False
+        if self.paused is False:
+            arcade.schedule(self.add_enemy, 0.5)
+        arcade.schedule(self.add_enemy, 0.0)
 
     def add_enemy(self, delta_time: float):
         """Adds a new enemy to the screen.
@@ -78,6 +81,22 @@ class SnakeShooter(arcade.Window):
 
         self.enemies_list.append(enemy)
         self.all_sprites.append(enemy)
+
+    def add_bullet(self, delta_time: float):
+        """Add a bullet when space bar is pressed."""
+
+        # placeholder for bullet
+        bullet_image = ":resources:images/space_shooter/laserBlue01.png"
+        bullet = arcade.Sprite(bullet_image, DEFAULT_SCALE)
+        bullet.angle = 90.0
+        bullet.bottom = self.player.top
+        # how to add more bullets?
+        bullet.center_x = self.player.center_x
+
+        bullet.velocity = (0, 400)
+
+        self.bullets_list.append(bullet)
+        self.all_sprites.append(bullet)
 
     def on_key_press(self, symbol, modifiers):
         """Handle user input.
@@ -111,6 +130,9 @@ class SnakeShooter(arcade.Window):
 
         if symbol == arcade.key.D or symbol == arcade.key.RIGHT:
             self.player.change_x = 500
+
+        if symbol == arcade.key.SPACE:
+            self.add_bullet(0.25)
 
     def on_key_release(self, symbol: int, modifiers: int):
         """Undo movement vectors when movement keys are released
@@ -152,13 +174,17 @@ class SnakeShooter(arcade.Window):
             # TODO create end game popup
             arcade.close_window()
 
+        # Check for collision
+        for enemy in self.enemies_list:
+            if enemy.collides_with_list(self.bullets_list):
+                enemy.remove_from_sprite_lists()
+
         # Update everything
         for sprite in self.all_sprites:
             sprite.center_x = int(sprite.center_x + sprite.change_x * delta_time)
             sprite.center_y = int(sprite.center_y + sprite.change_y * delta_time)
 
         # Check player position
-
         # commenting out the top and bottom for now
         # this is where a "box" of movement would be defined
         # if self.player.top > self.height:
