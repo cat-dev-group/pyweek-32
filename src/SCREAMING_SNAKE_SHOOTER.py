@@ -17,7 +17,7 @@ class FlyingEnemy(arcade.Sprite):
         # I like to move it move it
         super().update()
 
-        # remove the enemy
+        # remove the enemy if it goes off screen
         if self.top < 0:
             self.remove_from_sprite_lists()
 
@@ -39,7 +39,7 @@ class SnakeShooter(arcade.Window):
         """Set up the game."""
 
         # placeholder for the background, choosing a default color
-        arcade.set_background_color(arcade.color.SKY_BLUE)
+        arcade.set_background_color(arcade.color.XANADU)
 
         # placeholder for the player, using built in space ship for now
         ship_image = ":resources:images/space_shooter/playerShip1_blue.png"
@@ -74,7 +74,7 @@ class SnakeShooter(arcade.Window):
 
         # velocity is a list of the form x,y
         # with enemies coming straight down, change in x is 0
-        enemy.velocity = (0, random.randint(-20, -5))
+        enemy.velocity = (0, random.randint(-1000, -500))
 
         self.enemies_list.append(enemy)
         self.all_sprites.append(enemy)
@@ -107,10 +107,10 @@ class SnakeShooter(arcade.Window):
         #     self.player.change_y = -5
 
         if symbol == arcade.key.A or symbol == arcade.key.LEFT:
-            self.player.change_x = -5
+            self.player.change_x = -500
 
         if symbol == arcade.key.D or symbol == arcade.key.RIGHT:
-            self.player.change_x = 5
+            self.player.change_x = 500
 
     def on_key_release(self, symbol: int, modifiers: int):
         """Undo movement vectors when movement keys are released
@@ -147,8 +147,15 @@ class SnakeShooter(arcade.Window):
         if self.paused:
             return
 
+        # Check for collision
+        if self.player.collides_with_list(self.enemies_list):
+            # TODO create end game popup
+            arcade.close_window()
+
         # Update everything
-        self.all_sprites.update()
+        for sprite in self.all_sprites:
+            sprite.center_x = int(sprite.center_x + sprite.change_x * delta_time)
+            sprite.center_y = int(sprite.center_y + sprite.change_y * delta_time)
 
         # Check player position
 
