@@ -2,9 +2,6 @@ import random
 
 import arcade
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "SCREAMING_SNAKE_SHOOTER"
 SCALING = 1.0
 
 
@@ -170,11 +167,3 @@ class SnakeShooter(arcade.Window):
         """Draw all game objects."""
         arcade.start_render()
         self.all_sprites.draw()
-
-
-if __name__ == "__main__":
-    screaming_snake_shooter = SnakeShooter(
-        width=SCREEN_WIDTH, height=SCREEN_HEIGHT, title=SCREEN_TITLE
-    )
-    screaming_snake_shooter.setup()
-    arcade.run()
