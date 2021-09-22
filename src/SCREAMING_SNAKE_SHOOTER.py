@@ -2,7 +2,8 @@ import random
 
 import arcade
 
-SCALING = 1.0
+PLAYER_SCALE = 1.0
+ENEMY_SCALE = 0.75
 
 
 class FlyingEnemy(arcade.Sprite):
@@ -42,7 +43,7 @@ class SnakeShooter(arcade.Window):
 
         # placeholder for the player, using built in space ship for now
         ship_image = ":resources:images/space_shooter/playerShip1_blue.png"
-        self.player = arcade.Sprite(ship_image, SCALING)
+        self.player = arcade.Sprite(ship_image, PLAYER_SCALE)
         self.player.bottom = 10  # set the initial position 10 pixels from the bottom
         self.player.center_x = (
             self.width / 2
@@ -65,7 +66,7 @@ class SnakeShooter(arcade.Window):
         """
         # placeholder for enemy, using built in bee for now
         enemy_image = ":resources:images/enemies/bee.png"
-        enemy = FlyingEnemy(enemy_image, SCALING)
+        enemy = FlyingEnemy(enemy_image, ENEMY_SCALE)
 
         # set position to above the screen, at a random width
         enemy.bottom = random.randint(self.height, self.height + 80)

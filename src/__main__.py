@@ -2,8 +2,8 @@ import arcade
 
 from .SCREAMING_SNAKE_SHOOTER import SnakeShooter
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 1200
 SCREEN_TITLE = "SCREAMING_SNAKE_SHOOTER"
 
 if __name__ == "__main__":
