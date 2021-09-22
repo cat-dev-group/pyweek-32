@@ -83,8 +83,7 @@ class SnakeShooter(arcade.Window):
 
     def on_key_press(self, symbol, modifiers):
         """Handle user input.
-        Q: Quit
-        P: Pause
+        ESCAPE: Pause (pause in the future, quit immediately now)
         W / A / S / D: Move Up, Left, Down Right
         Arrows: Move Up, Left, Down Right
 
@@ -92,6 +91,9 @@ class SnakeShooter(arcade.Window):
             symbol (int): Which key was pressed
             modifiers (int): Which modifiers were pressed
         """
+        # TODO
+        # create a pause screen pop up on escape press
+        # user should be able to choose to quit or resum
         if symbol == arcade.key.ESCAPE:
             # Quit immediately
             arcade.close_window()
@@ -151,13 +153,16 @@ class SnakeShooter(arcade.Window):
         self.all_sprites.update()
 
         # Check player position
+
         # commenting out the top and bottom for now
+        # this is where a "box" of movement would be defined
         # if self.player.top > self.height:
         #     self.player.top = self.height
+        # if self.player.bottom < 0:
+        #     self.player.bottom = 0
+        # set left and right bounds
         if self.player.right > self.width:
             self.player.right = self.width
-        # # if self.player.bottom < 0:
-        # #     self.player.bottom = 0
         if self.player.left < 0:
             self.player.left = 0
 
