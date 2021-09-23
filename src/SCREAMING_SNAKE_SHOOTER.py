@@ -57,9 +57,7 @@ class SnakeShooter(arcade.Window):
         # TODO need to add some logic to define when / how to "spawn" enemies
         # schedule accepts an addition function for adding a sprite
         # and a time between adding enemies
-        if self.paused is False:
-            arcade.schedule(self.add_enemy, 0.5)
-        arcade.schedule(self.add_enemy, 0.0)
+        arcade.schedule(self.add_enemy, 0.5)
 
     def add_enemy(self, delta_time: float):
         """Adds a new enemy to the screen.
@@ -77,7 +75,7 @@ class SnakeShooter(arcade.Window):
 
         # velocity is a list of the form x,y
         # with enemies coming straight down, change in x is 0
-        enemy.velocity = (0, random.randint(-1000, -500))
+        enemy.velocity = (0, random.randint(-800, -500))
 
         self.enemies_list.append(enemy)
         self.all_sprites.append(enemy)
@@ -117,6 +115,10 @@ class SnakeShooter(arcade.Window):
 
         if symbol == arcade.key.P:
             self.paused = not self.paused
+            if self.paused:
+                arcade.unschedule(self.add_enemy)
+            else:
+                arcade.schedule(self.add_enemy, 0.5)
 
         # Commenting out for now, should the player be able to move up or down?
         # if symbol == arcade.key.W or symbol == arcade.key.UP:
@@ -167,6 +169,7 @@ class SnakeShooter(arcade.Window):
         """
         # Check for pause
         if self.paused:
+            arcade.unschedule(self.add_enemy)
             return
 
         # Check for collision
@@ -176,8 +179,10 @@ class SnakeShooter(arcade.Window):
 
         # Check for collision
         for enemy in self.enemies_list:
-            if enemy.collides_with_list(self.bullets_list):
-                enemy.remove_from_sprite_lists()
+            for bullet in self.bullets_list:
+                if enemy.collides_with_list(self.bullets_list):
+                    enemy.remove_from_sprite_lists()
+                    bullet.remove_from_sprite_lists()
 
         # Update everything
         for sprite in self.all_sprites:
@@ -201,3 +206,7 @@ class SnakeShooter(arcade.Window):
         """Draw all game objects."""
         arcade.start_render()
         self.all_sprites.draw()
+
+
+class PauseView(arcade.View):
+    """"""
