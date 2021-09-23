@@ -5,13 +5,16 @@ import arcade
 PLAYER_SCALE = 1.0
 ENEMY_SCALE = 0.75
 DEFAULT_SCALE = 1.0
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 1200
 
 
 class FlyingEnemy(arcade.Sprite):
     """Base class for moving enemies."""
 
     def update(self):
-        """Update the position of the enemy.
+        """
+        Update the position of the enemy.
         When it moves off the bottom of the screen, remove it.
         """
 
@@ -23,11 +26,11 @@ class FlyingEnemy(arcade.Sprite):
             self.remove_from_sprite_lists()
 
 
-class SnakeShooter(arcade.Window):
+class SnakeShooter(arcade.View):
     """SCREAMING_SNAKE_SHOOTER is a top-down survival shooter game."""
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         # define a list of enemies as a SpriteList
         self.enemies_list = arcade.SpriteList()
@@ -39,7 +42,6 @@ class SnakeShooter(arcade.Window):
 
     def setup(self):
         """Set up the game."""
-
         # placeholder for the background, choosing a default color
         arcade.set_background_color(arcade.color.XANADU)
 
@@ -48,11 +50,12 @@ class SnakeShooter(arcade.Window):
         self.player = arcade.Sprite(ship_image, PLAYER_SCALE)
         self.player.bottom = 10  # set the initial position 10 pixels from the bottom
         self.player.center_x = (
-            self.width / 2
+            SCREEN_WIDTH / 2
         )  # set the initial position in the middle of the screen
         self.all_sprites.append(self.player)
 
         self.paused = False
+
         # Scheduling Functions
         # TODO need to add some logic to define when / how to "spawn" enemies
         # schedule accepts an addition function for adding a sprite
@@ -60,7 +63,8 @@ class SnakeShooter(arcade.Window):
         arcade.schedule(self.add_enemy, 0.5)
 
     def add_enemy(self, delta_time: float):
-        """Adds a new enemy to the screen.
+        """
+        Adds a new enemy to the screen.
 
         params:
             delta_time (float): How much time has passed since the last call
@@ -70,17 +74,19 @@ class SnakeShooter(arcade.Window):
         enemy = FlyingEnemy(enemy_image, ENEMY_SCALE)
 
         # set position to above the screen, at a random width
-        enemy.bottom = random.randint(self.height, self.height + 80)
-        enemy.right = random.randint(10, self.width - 10)
+        enemy.bottom = random.randint(SCREEN_HEIGHT, SCREEN_HEIGHT + 80)
+        enemy.right = random.randint(10, SCREEN_WIDTH - 10)
 
         # velocity is a list of the form x,y
         # with enemies coming straight down, change in x is 0
         enemy.velocity = (0, random.randint(-800, -500))
 
+        # add enemy to enemy list and sprites list
+        # will use to check for collisions and update loop
         self.enemies_list.append(enemy)
         self.all_sprites.append(enemy)
 
-    def add_bullet(self, delta_time: float):
+    def add_bullet(self):
         """Add a bullet when space bar is pressed."""
 
         # placeholder for bullet
@@ -93,11 +99,14 @@ class SnakeShooter(arcade.Window):
 
         bullet.velocity = (0, 400)
 
+        # add bullet to bullet list and sprites list
+        # will use to check for collisions and update loop
         self.bullets_list.append(bullet)
         self.all_sprites.append(bullet)
 
     def on_key_press(self, symbol, modifiers):
-        """Handle user input.
+        """
+        Handle user input.
         ESCAPE: Pause (pause in the future, quit immediately now)
         W / A / S / D: Move Up, Left, Down Right
         Arrows: Move Up, Left, Down Right
@@ -106,19 +115,14 @@ class SnakeShooter(arcade.Window):
             symbol (int): Which key was pressed
             modifiers (int): Which modifiers were pressed
         """
-        # TODO
-        # create a pause screen pop up on escape press
-        # user should be able to choose to quit or resum
         if symbol == arcade.key.ESCAPE:
             # Quit immediately
             arcade.close_window()
 
         if symbol == arcade.key.P:
-            self.paused = not self.paused
-            if self.paused:
-                arcade.unschedule(self.add_enemy)
-            else:
-                arcade.schedule(self.add_enemy, 0.5)
+            # show pause screen
+            pause = PauseView(self, self.add_enemy)
+            self.window.show_view(pause)
 
         # Commenting out for now, should the player be able to move up or down?
         # if symbol == arcade.key.W or symbol == arcade.key.UP:
@@ -134,10 +138,11 @@ class SnakeShooter(arcade.Window):
             self.player.change_x = 500
 
         if symbol == arcade.key.SPACE:
-            self.add_bullet(0.25)
+            self.add_bullet()
 
     def on_key_release(self, symbol: int, modifiers: int):
-        """Undo movement vectors when movement keys are released
+        """
+        Undo movement vectors when movement keys are released
 
         params:
             symbol (int): Which key was pressed
@@ -161,17 +166,13 @@ class SnakeShooter(arcade.Window):
             self.player.change_x = 0
 
     def on_update(self, delta_time: float):
-        """Update the positions of all game objects.
+        """
+        Update the positions of all game objects.
         If paused, do nothing.
 
         params:
             delta_time (float): Time since the last update
         """
-        # Check for pause
-        if self.paused:
-            arcade.unschedule(self.add_enemy)
-            return
-
         # Check for collision
         if self.player.collides_with_list(self.enemies_list):
             # TODO create end game popup
@@ -197,8 +198,8 @@ class SnakeShooter(arcade.Window):
         # if self.player.bottom < 0:
         #     self.player.bottom = 0
         # set left and right bounds
-        if self.player.right > self.width:
-            self.player.right = self.width
+        if self.player.right > SCREEN_WIDTH:
+            self.player.right = SCREEN_WIDTH
         if self.player.left < 0:
             self.player.left = 0
 
@@ -209,4 +210,86 @@ class SnakeShooter(arcade.Window):
 
 
 class PauseView(arcade.View):
-    """"""
+    """
+    Create pause menu screen, with options to resume or quit.
+
+    Will accept a passed scheduled function to "pause" with `arcade.unschedule`.
+    """
+
+    def __init__(self, game_view, scheduled_function):
+        super().__init__()
+        self.game_view = game_view
+        self.fill_color = arcade.make_transparent_color(
+            arcade.color.WHITE, transparency=100
+        )
+        self.scheduled_function = scheduled_function
+        arcade.unschedule(self.scheduled_function)
+
+    def on_draw(self):
+        """Create a pause menu with options to quit or resume."""
+        self.game_view.on_draw()
+        arcade.draw_lrtb_rectangle_filled(
+            left=0,
+            right=SCREEN_WIDTH,
+            top=SCREEN_HEIGHT,
+            bottom=0,
+            color=self.fill_color,
+        )
+
+        arcade.draw_text(
+            "Press P to resume",
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            "Press ESC to quit",
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2 + 200,
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center",
+        )
+
+    def on_key_press(self, symbol, modifiers):
+        """Handle options to quit or resume."""
+        if symbol == arcade.key.ESCAPE:
+            # Quit immediately
+            arcade.close_window()
+
+        if symbol == arcade.key.P:
+            self.window.show_view(self.game_view)
+            arcade.schedule(self.scheduled_function, 0.5)
+
+
+class StartView(arcade.View):
+    """ "Create the greeting view screen."""
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+        self.fill_color = arcade.make_transparent_color(
+            arcade.color.BLACK, transparency=0
+        )
+
+    def on_draw(self):
+        """Create displayed elements at the start."""
+        arcade.draw_text(
+            "Press Any Key to START",
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2,
+            arcade.color.BRIGHT_GREEN,
+            font_size=40,
+            anchor_x="center",
+            bold=True,
+        )
+
+    def on_key_press(self, symbol, modifiers):
+        """Handle any key press to start."""
+        if symbol:
+            start = SnakeShooter()
+            start.setup()
+            self.window.show_view(start)
