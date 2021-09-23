@@ -289,7 +289,8 @@ class StartView(arcade.View):
 
     def on_key_press(self, symbol, modifiers):
         """Handle any key press to start."""
-        if symbol:
+        # Don't start if print screen or windows key
+        if symbol != 188978561024 and symbol != 65515:
             start = SnakeShooter()
             start.setup()
             self.window.show_view(start)
