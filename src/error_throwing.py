@@ -12,17 +12,39 @@ class ErrorThrower:
     def __init__(self) -> None:
         """This function is defining instance attributes and does not have any arguments."""
         self.errors = (
-            "AssertionError", "AttributeError", "EOFError", "FloatingPointError", "GeneratorExit", "ImportError",
-            "IndexError", "KeyError", "KeyboardInterrupt", "MemoryError", "NameError", "NotImplementedError",
-            "OSError", "OverflowError", "ReferenceError", "RuntimeError", "StopIteration", "SyntaxError",
-            "IndentationError", "TabError", "SystemError", "SystemExit", "TypeError", "UnboundLocalError",
-            "UnicodeError", "UnicodeEncodeError", "UnicodeDecodeError", "UnicodeTranslateError",
-            "ValueError", "ZeroDivisionError",
+            "AssertionError",
+            "AttributeError",
+            "EOFError",
+            "FloatingPointError",
+            "GeneratorExit",
+            "ImportError",
+            "IndexError",
+            "KeyError",
+            "KeyboardInterrupt",
+            "MemoryError",
+            "NameError",
+            "NotImplementedError",
+            "OSError",
+            "OverflowError",
+            "ReferenceError",
+            "RuntimeError",
+            "StopIteration",
+            "SyntaxError",
+            "IndentationError",
+            "TabError",
+            "SystemError",
+            "SystemExit",
+            "TypeError",
+            "UnboundLocalError",
+            "UnicodeError",
+            "UnicodeEncodeError",
+            "UnicodeDecodeError",
+            "UnicodeTranslateError",
+            "ValueError",
+            "ZeroDivisionError",
         )
 
-    def throw_errors(
-        self, count: int = 1, name: str = ""
-    ) -> FunctionType:
+    def throw_errors(self, count: int = 1, name: str = "") -> FunctionType:
         """Returns the new function with the errors passed in."""
 
         def decorator(function: FunctionType) -> FunctionType:
