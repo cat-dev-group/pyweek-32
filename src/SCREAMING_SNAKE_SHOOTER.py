@@ -86,7 +86,7 @@ class SnakeShooter(arcade.View):
         self.enemies_list.append(enemy)
         self.all_sprites.append(enemy)
 
-    def add_bullet(self):
+    def add_bullet(self, start_position):
         """Add a bullet when space bar is pressed."""
 
         # placeholder for bullet
@@ -95,7 +95,7 @@ class SnakeShooter(arcade.View):
         bullet.angle = 90.0
         bullet.bottom = self.player.top
         # how to add more bullets?
-        bullet.center_x = self.player.center_x
+        bullet.center_x = start_position
 
         bullet.velocity = (0, 400)
 
@@ -138,7 +138,8 @@ class SnakeShooter(arcade.View):
             self.player.change_x = 500
 
         if symbol == arcade.key.SPACE:
-            self.add_bullet()
+            self.add_bullet(self.player.left)
+            self.add_bullet(self.player.right)
 
     def on_key_release(self, symbol: int, modifiers: int):
         """

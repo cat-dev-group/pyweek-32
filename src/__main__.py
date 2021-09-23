@@ -1,7 +1,9 @@
 import arcade
+from dotenv import load_dotenv
 
 from .SCREAMING_SNAKE_SHOOTER import StartView
 
+load_dotenv("./.env")
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 1200
 SCREEN_TITLE = "SCREAMING_SNAKE_SHOOTER"
