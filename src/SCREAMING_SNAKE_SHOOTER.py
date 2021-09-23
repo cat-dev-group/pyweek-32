@@ -265,7 +265,7 @@ class PauseView(arcade.View):
 
 
 class StartView(arcade.View):
-    """ "Create the greeting view screen."""
+    """Create the greeting view screen."""
 
     def __init__(
         self,
