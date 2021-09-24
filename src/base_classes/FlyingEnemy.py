@@ -10,7 +10,6 @@ class FlyingEnemy(arcade.Sprite):
         When it moves off the bottom of the screen, remove it.
         """
 
-        # I like to move it move it
         super().update()
 
         # remove the enemy if it goes off screen
