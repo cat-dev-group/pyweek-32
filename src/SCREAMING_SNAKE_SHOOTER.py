@@ -42,6 +42,8 @@ class SnakeShooter(arcade.View):
 
         self.paused = False
 
+        self.score = 0
+
         # Scheduling Functions
         # TODO need to add some logic to define when / how to "spawn" enemies
         # schedule accepts an addition function for adding a sprite
@@ -107,7 +109,11 @@ class SnakeShooter(arcade.View):
 
         if symbol == arcade.key.P:
             # show pause screen
-            pause = PauseScreen(self, self.add_enemy)
+            pause = PauseScreen(
+                self,
+                self.add_enemy,
+                self.score,
+            )
             self.window.show_view(pause)
 
         # Commenting out for now, should the player be able to move up or down?
@@ -173,6 +179,7 @@ class SnakeShooter(arcade.View):
                 if enemy.collides_with_list(self.bullets_list):
                     enemy.remove_from_sprite_lists()
                     bullet.remove_from_sprite_lists()
+                    self.score += 100
 
         # Update everything
         for sprite in self.all_sprites:
@@ -196,3 +203,20 @@ class SnakeShooter(arcade.View):
         """Draw all game objects."""
         arcade.start_render()
         self.all_sprites.draw()
+
+        arcade.draw_lrtb_rectangle_filled(
+            left=SCREEN_WIDTH - 120,
+            right=SCREEN_WIDTH,
+            top=SCREEN_HEIGHT,
+            bottom=SCREEN_HEIGHT - 30,
+            color=arcade.color.BLACK,
+        )
+
+        score_text = f"SCORE: {self.score:9}"
+        arcade.draw_text(
+            score_text,
+            SCREEN_WIDTH - 110,
+            SCREEN_HEIGHT - 20,
+            arcade.color.WHITE,
+            10,
+        )
