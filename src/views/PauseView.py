@@ -1,6 +1,11 @@
-import arcade
+import os
 
-import __main__
+import arcade
+from dotenv import load_dotenv
+
+load_dotenv()
+SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
+SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT"))
 
 
 class PauseScreen(arcade.View):
@@ -30,8 +35,8 @@ class PauseScreen(arcade.View):
         self.game_view.on_draw()
         arcade.draw_lrtb_rectangle_filled(
             left=0,
-            right=__main__.SCREEN_WIDTH,
-            top=__main__.SCREEN_HEIGHT,
+            right=SCREEN_WIDTH,
+            top=SCREEN_HEIGHT,
             bottom=0,
             color=self.fill_color,
         )
@@ -39,24 +44,24 @@ class PauseScreen(arcade.View):
         current_score = f"Current score: {self.score:9}"
         arcade.draw_text(
             current_score,
-            __main__.SCREEN_WIDTH / 2,
-            __main__.SCREEN_HEIGHT / 2 + 250,
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2 + 250,
             arcade.color.BLACK,
             font_size=20,
             anchor_x="center",
         )
         arcade.draw_text(
             "Press P to resume",
-            __main__.SCREEN_WIDTH / 2,
-            __main__.SCREEN_HEIGHT / 2 + 200,
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2 + 200,
             arcade.color.BLACK,
             font_size=20,
             anchor_x="center",
         )
         arcade.draw_text(
             "Press ESC to quit",
-            __main__.SCREEN_WIDTH / 2,
-            __main__.SCREEN_HEIGHT / 2 + 150,
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2 + 150,
             arcade.color.BLACK,
             font_size=20,
             anchor_x="center",

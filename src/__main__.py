@@ -1,9 +1,14 @@
+import os
+
 import arcade
+from dotenv import load_dotenv
 
 from src.views.StartView import StartScreen
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 1000
+load_dotenv()
+SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
+SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT"))
+
 SCREEN_TITLE = "SCREAMING_SNAKE_SHOOTER"
 
 if __name__ == "__main__":

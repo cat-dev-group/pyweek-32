@@ -1,15 +1,18 @@
+import os
 import random
 
 import arcade
+from dotenv import load_dotenv
 
 from src.base_classes.FlyingEnemy import FlyingEnemy
 from src.views.PauseView import PauseScreen
 
-PLAYER_SCALE = 1.0
-ENEMY_SCALE = 0.75
-DEFAULT_SCALE = 1.0
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 1000
+load_dotenv()
+PLAYER_SCALE = int(os.getenv("PLAYER_SCALE"))
+ENEMY_SCALE = int(os.getenv("ENEMY_SCALE"))
+DEFAULT_SCALE = int(os.getenv("DEFAULT_SCALE"))
+SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
+SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT"))
 
 
 class SnakeShooter(arcade.View):
