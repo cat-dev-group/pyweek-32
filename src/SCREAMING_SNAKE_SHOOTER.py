@@ -124,8 +124,10 @@ class SnakeShooter(arcade.View):
             self.player.change_x = 500
 
         if symbol == arcade.key.SPACE:
-            self.add_bullet(self.player.left)
-            self.add_bullet(self.player.right)
+            self.add_bullet(self.player.center_x)
+            # can add multiple bullets at once and at different positions
+            # self.add_bullet(self.player.left)
+            # self.add_bullet(self.player.right)
 
     def on_key_release(self, symbol: int, modifiers: int):
         """
