@@ -2,28 +2,14 @@ import random
 
 import arcade
 
+from src.base_classes.FlyingEnemy import FlyingEnemy
+from src.views.PauseView import PauseScreen
+
 PLAYER_SCALE = 1.0
 ENEMY_SCALE = 0.75
 DEFAULT_SCALE = 1.0
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
-
-
-class FlyingEnemy(arcade.Sprite):
-    """Base class for moving enemies."""
-
-    def update(self):
-        """
-        Update the position of the enemy.
-        When it moves off the bottom of the screen, remove it.
-        """
-
-        # I like to move it move it
-        super().update()
-
-        # remove the enemy if it goes off screen
-        if self.top < 0:
-            self.remove_from_sprite_lists()
 
 
 class SnakeShooter(arcade.View):
@@ -121,7 +107,7 @@ class SnakeShooter(arcade.View):
 
         if symbol == arcade.key.P:
             # show pause screen
-            pause = PauseView(self, self.add_enemy)
+            pause = PauseScreen(self, self.add_enemy)
             self.window.show_view(pause)
 
         # Commenting out for now, should the player be able to move up or down?
@@ -208,90 +194,3 @@ class SnakeShooter(arcade.View):
         """Draw all game objects."""
         arcade.start_render()
         self.all_sprites.draw()
-
-
-class PauseView(arcade.View):
-    """
-    Create pause menu screen, with options to resume or quit.
-
-    Will accept a passed scheduled function to "pause" with `arcade.unschedule`.
-    """
-
-    def __init__(self, game_view, scheduled_function):
-        super().__init__()
-        self.game_view = game_view
-        self.fill_color = arcade.make_transparent_color(
-            arcade.color.WHITE, transparency=100
-        )
-        self.scheduled_function = scheduled_function
-        arcade.unschedule(self.scheduled_function)
-
-    def on_draw(self):
-        """Create a pause menu with options to quit or resume."""
-        self.game_view.on_draw()
-        arcade.draw_lrtb_rectangle_filled(
-            left=0,
-            right=SCREEN_WIDTH,
-            top=SCREEN_HEIGHT,
-            bottom=0,
-            color=self.fill_color,
-        )
-
-        arcade.draw_text(
-            "Press P to resume",
-            SCREEN_WIDTH / 2,
-            SCREEN_HEIGHT / 2,
-            arcade.color.BLACK,
-            font_size=20,
-            anchor_x="center",
-        )
-        arcade.draw_text(
-            "Press ESC to quit",
-            SCREEN_WIDTH / 2,
-            SCREEN_HEIGHT / 2 + 200,
-            arcade.color.BLACK,
-            font_size=20,
-            anchor_x="center",
-        )
-
-    def on_key_press(self, symbol, modifiers):
-        """Handle options to quit or resume."""
-        if symbol == arcade.key.ESCAPE:
-            # Quit immediately
-            arcade.close_window()
-
-        if symbol == arcade.key.P:
-            self.window.show_view(self.game_view)
-            arcade.schedule(self.scheduled_function, 0.5)
-
-
-class StartView(arcade.View):
-    """Create the greeting view screen."""
-
-    def __init__(
-        self,
-    ):
-        super().__init__()
-        self.fill_color = arcade.make_transparent_color(
-            arcade.color.BLACK, transparency=0
-        )
-
-    def on_draw(self):
-        """Create displayed elements at the start."""
-        arcade.draw_text(
-            "Press Any Key to START",
-            SCREEN_WIDTH / 2,
-            SCREEN_HEIGHT / 2,
-            arcade.color.BRIGHT_GREEN,
-            font_size=40,
-            anchor_x="center",
-            bold=True,
-        )
-
-    def on_key_press(self, symbol, modifiers):
-        """Handle any key press to start."""
-        # Don't start if print screen or windows key
-        if symbol != 188978561024 and symbol != 65515:
-            start = SnakeShooter()
-            start.setup()
-            self.window.show_view(start)
