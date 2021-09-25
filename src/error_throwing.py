@@ -1,81 +1,23 @@
 """error_throwing.py is used for generating the errors the game loop uses for the errors the user has to shoot."""
 from dataclasses import dataclass
 from enum import Enum
-from random import randrange
-from types import FunctionType, GeneratorType
-from typing import Any
+from random import choice, randrange
 
 
-class ErrorThrower:
-    """The class that generates 'errors' for the game to use with having the user shoot the bugs."""
+def generate_error() -> "Error":
+    """
+    Returns an error to be passed back into the function as an argument."""
+    choice_mapping = {
+        ErrorType.PYTHON: (randrange(80, 100), choice((0.15, 0.17, 0.19, 0.2))),
+        ErrorType.STDLIB: (randrange(101, 120), choice((0.2, 0.23, 0.27, 0.3))),
+        ErrorType.EXTERNAL: (randrange(125, 150), choice((0.32, 0.35, 0.37, 0.4))),
+    }
 
-    def __init__(self) -> None:
-        """This function is defining instance attributes and does not have any arguments."""
-        self.errors = (
-            "AssertionError",
-            "AttributeError",
-            "EOFError",
-            "FloatingPointError",
-            "GeneratorExit",
-            "ImportError",
-            "IndexError",
-            "KeyError",
-            "KeyboardInterrupt",
-            "MemoryError",
-            "NameError",
-            "NotImplementedError",
-            "OSError",
-            "OverflowError",
-            "ReferenceError",
-            "RuntimeError",
-            "StopIteration",
-            "SyntaxError",
-            "IndentationError",
-            "TabError",
-            "SystemError",
-            "SystemExit",
-            "TypeError",
-            "UnboundLocalError",
-            "UnicodeError",
-            "UnicodeEncodeError",
-            "UnicodeDecodeError",
-            "UnicodeTranslateError",
-            "ValueError",
-            "ZeroDivisionError",
-        )
-
-    def throw_errors(self, count: int = 1, name: str = "") -> FunctionType:
-        """Returns the new function with the errors passed in."""
-
-        def decorator(function: FunctionType) -> FunctionType:
-            """
-            Returns the wrapper and itself.
-
-            Implements the brute of the decorator and does the 'lifting work' for this decorator.
-            """
-
-            def wrapper(*args: Any, **kwargs: Any) -> FunctionType:
-                """Returns the new function with the 'errors' passed into the function."""
-                errors = self._generate_errors(count)
-                if name:
-                    return function(*args, **{name: errors}, **kwargs)
-                else:
-                    return function(*args, errors, **kwargs)
-
-            return wrapper
-
-        return decorator
-
-    def _generate_errors(self, count: int = 1) -> GeneratorType:
-        """
-        Returns errors to be passed back into the function as an argument.
-
-        Pulls random errors from `self.errors` and puts into the Error class, for easy access to important attributes.
-        """
-        errors = (self.errors[randrange(0, len(self.errors))] for _ in range(count))
-        # Hard coded to PYTHON for now
-        errors = (Error(ErrorType.PYTHON, error_name, 100) for error_name in errors)
-        return errors
+    type_of_error = choice((ErrorType.PYTHON, ErrorType.STDLIB, ErrorType.EXTERNAL))
+    health = choice_mapping[type_of_error][0]
+    scale = choice_mapping[type_of_error][-1]
+    type_of_error = Error(type_of_error, health, scale)
+    return type_of_error
 
 
 class ErrorType(Enum):
@@ -102,5 +44,5 @@ class Error:
     """
 
     error_type: ErrorType
-    name: str
-    health: float
+    health: int
+    scale: float
