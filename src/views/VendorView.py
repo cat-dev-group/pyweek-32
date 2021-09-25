@@ -129,7 +129,8 @@ class VendorScreen(arcade.View):
         @push_to_main.event("on_click")
         def on_click_push_to_main(event):  # noqa F811: doesn't work when re-defined
             self.selected_gun = available_guns[self.selected_text]
-            self.score -= self.selected_gun.price
+            if self.score - self.selected_gun.price >= 0:
+                self.score -= self.selected_gun.price
 
             self.pause_view.score = self.score
             self.pause_view.equipped_gun = self.selected_gun
