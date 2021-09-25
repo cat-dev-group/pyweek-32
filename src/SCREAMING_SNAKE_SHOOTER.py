@@ -6,10 +6,12 @@ from dotenv import load_dotenv
 
 from src.base_classes.FlyingEnemy import FlyingEnemy
 from src.views.PauseView import PauseScreen
+from src.base_classes.gun import Gun
 
 from .error_throwing import generate_error
 
 load_dotenv()
+
 PLAYER_SCALE = float(os.getenv("PLAYER_SCALE"))
 DEFAULT_SCALE = float(os.getenv("DEFAULT_SCALE"))
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
@@ -38,11 +40,16 @@ class SnakeShooter(arcade.View):
         # placeholder for the player, using built in space ship for now
         ship_image = ":resources:images/space_shooter/playerShip1_blue.png"
         self.player = arcade.Sprite(ship_image, PLAYER_SCALE)
+        self.gun = Gun("py-90", scale=0.5, angle=90)
+
+        self.gun.bottom = 15
+        self.gun.center_x = (SCREEN_WIDTH / 2) - 50
         self.player.bottom = 10  # set the initial position 10 pixels from the bottom
         self.player.center_x = (
             SCREEN_WIDTH / 2
         )  # set the initial position in the middle of the screen
         self.all_sprites.append(self.player)
+        self.all_sprites.append(self.gun)
 
         self.paused = False
 
@@ -125,20 +132,15 @@ class SnakeShooter(arcade.View):
             )
             self.window.show_view(pause)
 
-        # Commenting out for now, should the player be able to move up or down?
-        # if symbol == arcade.key.W or symbol == arcade.key.UP:
-        #     self.player.change_y = 5
-
-        # if symbol == arcade.key.S or symbol == arcade.key.DOWN:
-        #     self.player.change_y = -5
-
         if symbol == arcade.key.A or symbol == arcade.key.LEFT:
             self.player.change_x = -500
+            self.gun.change_x = -500
             self.player.angle = 90
 
         if symbol == arcade.key.D or symbol == arcade.key.RIGHT:
             self.player.change_x = 500
             self.player.angle = -90
+            self.gun.change_x = 500
 
         if symbol == arcade.key.SPACE:
             self.add_bullet(self.player.center_x)
@@ -172,6 +174,7 @@ class SnakeShooter(arcade.View):
         ):
             self.player.change_x = 0
             self.player.angle = 0
+            self.gun.change_x = 0
 
     def on_update(self, delta_time: float):
         """
@@ -215,6 +218,10 @@ class SnakeShooter(arcade.View):
             self.player.right = SCREEN_WIDTH
         if self.player.left < 0:
             self.player.left = 0
+        if self.gun.right > SCREEN_WIDTH:
+            self.gun.right = SCREEN_WIDTH
+        if self.gun.left < 0:
+            self.gun.left = 0
 
     def on_draw(self):
         """Draw all game objects."""
