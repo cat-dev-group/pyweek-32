@@ -35,13 +35,10 @@ class StartScreen(arcade.View):
 
     def on_key_press(self, symbol, modifiers):
         """Handle any key press to start."""
-        # Don't start if print screen or windows key
-        if symbol != 188978561024 and symbol != 65515:
+        # stop sound if user starts game prematurely
+        if self.jingle_sound_object.is_playing(self.mus_player):
+            arcade.stop_sound(self.mus_player)
 
-            # stop sound if user starts game prematurely
-            if self.jingle_sound_object.is_playing(self.mus_player):
-                arcade.stop_sound(self.mus_player)
-
-            main_game = SnakeShooter()
-            main_game.setup()
-            self.window.show_view(main_game)
+        main_game = SnakeShooter()
+        main_game.setup()
+        self.window.show_view(main_game)

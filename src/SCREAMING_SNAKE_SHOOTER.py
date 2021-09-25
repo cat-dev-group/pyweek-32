@@ -159,13 +159,11 @@ class SnakeShooter(arcade.View):
                 next_gun = list(self.guns)[self.gun_index]
                 self.equipped_gun.remove_from_sprite_lists()
                 self.equipped_gun = self.guns[next_gun]
-                print(f"{self.equipped_gun = }")
             else:
                 self.gun_index += 1
                 next_gun = list(self.guns)[self.gun_index]
                 self.equipped_gun.remove_from_sprite_lists()
                 self.equipped_gun = self.guns[next_gun]
-                print(f"{self.equipped_gun = }")
 
     def on_key_release(self, symbol: int, modifiers: int):
         """

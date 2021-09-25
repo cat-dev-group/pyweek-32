@@ -137,7 +137,6 @@ class VendorScreen(arcade.View):
             self.pause_view.guns[self.selected_gun.gun_name] = self.selected_gun
             self.all_sprites.append(self.selected_gun)
             self.pause_view.all_sprites = self.all_sprites
-            print(f"{self.selected_gun=},{self.score=}")
 
         # add layouts to GUI manager
         self.manager.add(
