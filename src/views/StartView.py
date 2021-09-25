@@ -1,7 +1,8 @@
+from pathlib import Path
+
 import arcade
 
 from src.SCREAMING_SNAKE_SHOOTER import SnakeShooter
-from pathlib import Path
 
 
 class StartScreen(arcade.View):
