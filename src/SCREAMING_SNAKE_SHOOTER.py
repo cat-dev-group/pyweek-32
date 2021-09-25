@@ -7,9 +7,10 @@ from dotenv import load_dotenv
 from src.base_classes.FlyingEnemy import FlyingEnemy
 from src.views.PauseView import PauseScreen
 
+from .error_throwing import generate_error
+
 load_dotenv()
 PLAYER_SCALE = float(os.getenv("PLAYER_SCALE"))
-ENEMY_SCALE = float(os.getenv("ENEMY_SCALE"))
 DEFAULT_SCALE = float(os.getenv("DEFAULT_SCALE"))
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
 SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT"))
@@ -61,8 +62,13 @@ class SnakeShooter(arcade.View):
             delta_time (float): How much time has passed since the last call
         """
         # placeholder for enemy, using built in bee for now
-        enemy_image = ":resources:images/enemies/bee.png"
-        enemy = FlyingEnemy(enemy_image, ENEMY_SCALE)
+        error = generate_error()
+        enemy = FlyingEnemy(
+            error.health, f"src/images/{error.error_type.value}_bug.png", error.scale
+        )
+
+        # set angle to have the bug speeding down towards the player
+        enemy.angle = 180
 
         # set position to above the screen, at a random width
         enemy.bottom = random.randint(SCREEN_HEIGHT, SCREEN_HEIGHT + 80)
@@ -70,7 +76,7 @@ class SnakeShooter(arcade.View):
 
         # velocity is a list of the form x,y
         # with enemies coming straight down, change in x is 0
-        enemy.velocity = (0, random.randint(-800, -500))
+        enemy.velocity = (0, random.randint(-500, -300))
 
         # add enemy to enemy list and sprites list
         # will use to check for collisions and update loop
@@ -184,7 +190,11 @@ class SnakeShooter(arcade.View):
         for enemy in self.enemies_list:
             for bullet in self.bullets_list:
                 if enemy.collides_with_list(self.bullets_list):
-                    enemy.remove_from_sprite_lists()
+                    if enemy.health <= 0 or enemy.scale <= 0.1:
+                        enemy.remove_from_sprite_lists()
+                    else:
+                        enemy.health -= 50
+                        enemy.scale -= 0.05
                     bullet.remove_from_sprite_lists()
                     self.score += 100
 

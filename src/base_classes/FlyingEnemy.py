@@ -4,6 +4,10 @@ import arcade
 class FlyingEnemy(arcade.Sprite):
     """Base class for moving enemies."""
 
+    def __init__(self, health, *args, **kwargs) -> None:
+        self.health = health
+        super().__init__(*args, **kwargs)
+
     def update(self):
         """
         Update the position of the enemy.
