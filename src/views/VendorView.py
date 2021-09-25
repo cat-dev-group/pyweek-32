@@ -1,8 +1,12 @@
 import os
+import pathlib
 
 import arcade
 import arcade.gui
 from dotenv import load_dotenv
+
+from src.base_classes.gun import Gun
+from src.error_throwing import ErrorType
 
 load_dotenv()
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
@@ -15,13 +19,14 @@ class VendorScreen(arcade.View):
     def __init__(
         self,
         pause_view,
-        score,
     ):
         super().__init__()
         self.pause_view = pause_view
-        self.score = score
+        self.score = pause_view.score
+        self.equipped_gun = pause_view.equipped_gun
         self.selected_text = ""
-        self.selected_gun = "default"
+        self.selected_gun = self.equipped_gun
+        self.all_sprites = pause_view.all_sprites
 
         # start gui manager to handle buttons
         self.manager = arcade.gui.UIManager()
@@ -30,10 +35,51 @@ class VendorScreen(arcade.View):
         # code for adding clickable buttons for guns
         self.h_box = arcade.gui.UIBoxLayout(vertical=False)
 
+        # create guns
+        PY90 = Gun(
+            gun_name="PY90",
+            ammo=10000,
+            rof=20,
+            mag_size=10000,
+            specialty=ErrorType.PYTHON,
+            price=500,
+            image=pathlib.Path("src/images/KRISS.png"),
+            scale=0.5,
+            angle=90,
+        )
+        STDLIB47 = Gun(
+            gun_name="STDLIB47",
+            ammo=10000,
+            rof=20,
+            mag_size=10000,
+            specialty=ErrorType.PYTHON,
+            price=10000,
+            image=pathlib.Path("src/images/BAIKAL.png"),
+            scale=0.5,
+            angle=90,
+        )
+        EX47 = Gun(
+            gun_name="EX47",
+            ammo=10000,
+            rof=20,
+            mag_size=10000,
+            specialty=ErrorType.PYTHON,
+            price=1000000,
+            image=pathlib.Path("src/images/AK47.png"),
+            scale=0.5,
+            angle=90,
+        )
+
+        available_guns = {
+            "PY90": PY90,
+            "STDLIB47": STDLIB47,
+            "EX47": EX47,
+        }
+
         # create gun text
         gun1_text = "PY90"
         gun2_text = "STDLIB47"
-        gun3_text = "EX-47"
+        gun3_text = "EX47"
 
         # create gun buttons
         gun1 = arcade.gui.UIFlatButton(text=gun1_text, width=230)
@@ -83,8 +129,14 @@ class VendorScreen(arcade.View):
         # TODO need to return this variable back to the main game window
         @push_to_main.event("on_click")
         def on_click_push_to_main(event):  # noqa F811: doesn't work when re-defined
-            self.selected_gun = self.selected_text
-            print(f"{self.selected_gun=},{event=}")
+            self.selected_gun = available_guns[self.selected_text]
+            self.score -= self.selected_gun.price
+            self.pause_view.score = self.score
+            self.pause_view.equipped_gun = self.selected_gun
+            self.pause_view.guns[self.selected_gun.gun_name] = self.selected_gun
+            self.all_sprites.append(self.selected_gun)
+            self.pause_view.all_sprites = self.all_sprites
+            print(f"{self.selected_gun=},{self.score=}")
 
         # add layouts to GUI manager
         self.manager.add(
@@ -92,6 +144,8 @@ class VendorScreen(arcade.View):
                 anchor_x="center_x",
                 anchor_y="center_y",
                 child=self.h_box,
+                align_x=0,
+                align_y=-100,
             )
         )
         self.manager.add(
@@ -165,7 +219,6 @@ class VendorScreen(arcade.View):
 
         # 'terminal' commands
         purchase_text = f"$ git add {self.selected_text:15}"
-        print(f"{purchase_text = }")
         arcade.draw_text(
             purchase_text,
             SCREEN_WIDTH / 2 - 148,
@@ -191,6 +244,8 @@ class VendorScreen(arcade.View):
     def on_key_press(self, symbol, modifiers):
         """Return to Pause screen on 'P' press."""
         if symbol == arcade.key.P:
+            self.pause_view.on_draw()
             self.window.show_view(self.pause_view)
+
         if symbol == arcade.key.ESCAPE:
             arcade.close_window()

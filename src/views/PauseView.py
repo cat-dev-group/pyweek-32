@@ -18,20 +18,35 @@ class PauseScreen(arcade.View):
     Will accept a passed scheduled function to "pause" with `arcade.unschedule`.
     """
 
+    # def __init__(
+    #     self,
+    #     game_view,
+    #     scheduled_function,
+    #     score,
+    # ):
+    #     super().__init__()
+    #     self.game_view = game_view
+    #     self.fill_color = arcade.make_transparent_color(
+    #         arcade.color.WHITE, transparency=100
+    #     )
+    #     self.scheduled_function = scheduled_function
+    #     arcade.unschedule(self.scheduled_function)
+    #     self.score = score
     def __init__(
         self,
         game_view,
-        scheduled_function,
-        score,
     ):
         super().__init__()
         self.game_view = game_view
         self.fill_color = arcade.make_transparent_color(
             arcade.color.WHITE, transparency=100
         )
-        self.scheduled_function = scheduled_function
+        self.scheduled_function = game_view.add_enemy
         arcade.unschedule(self.scheduled_function)
-        self.score = score
+        self.score = game_view.score
+        self.guns = game_view.guns
+        self.equipped_gun = game_view.equipped_gun
+        self.all_sprites = game_view.all_sprites
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -43,7 +58,8 @@ class PauseScreen(arcade.View):
         # Handle Clicks
         @vendor_button.event("on_click")
         def on_click_flatbutton(event):
-            vendor_view = VendorScreen(self, self.score)
+
+            vendor_view = VendorScreen(self)
             self.window.show_view(vendor_view)
 
         # Create a widget to hold the v_box widget, that will center the buttons
@@ -105,5 +121,15 @@ class PauseScreen(arcade.View):
             arcade.close_window()
 
         if symbol == arcade.key.P:
+            self.game_view.score = self.score
+            self.game_view.equipped_gun = self.equipped_gun
+            self.game_view.guns = self.guns
+            try:
+                self.all_sprites.append(self.equipped_gun)
+                self.game_view.all_sprites = self.all_sprites
+            except ValueError:
+                pass
+            self.game_view.equipped_gun.center_x = self.game_view.player.center_x
+            self.game_view.on_draw()
             self.window.show_view(self.game_view)
             arcade.schedule(self.scheduled_function, 0.5)
