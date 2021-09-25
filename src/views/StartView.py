@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import arcade
 
 from src.SCREAMING_SNAKE_SHOOTER import SnakeShooter
@@ -13,6 +15,11 @@ class StartScreen(arcade.View):
         )
         self.width = width
         self.height = height
+
+        # plays start jingle
+        sound_src = Path.cwd() / "src" / "sounds" / "test_jingle.wav"
+        self.jingle_sound_object = arcade.load_sound(sound_src)
+        self.mus_player = arcade.play_sound(self.jingle_sound_object, volume=0.5)
 
     def on_draw(self):
         """Create displayed elements at the start."""
@@ -30,6 +37,11 @@ class StartScreen(arcade.View):
         """Handle any key press to start."""
         # Don't start if print screen or windows key
         if symbol != 188978561024 and symbol != 65515:
+
+            # stop sound if user starts game prematurely
+            if self.jingle_sound_object.is_playing(self.mus_player):
+                arcade.stop_sound(self.mus_player)
+
             main_game = SnakeShooter()
             main_game.setup()
             self.window.show_view(main_game)
