@@ -5,8 +5,8 @@ import arcade
 from dotenv import load_dotenv
 
 from src.base_classes.FlyingEnemy import FlyingEnemy
-from src.views.PauseView import PauseScreen
 from src.base_classes.gun import Gun
+from src.views.PauseView import PauseScreen
 
 from .error_throwing import generate_error
 
@@ -236,7 +236,7 @@ class SnakeShooter(arcade.View):
             color=arcade.color.BLACK,
         )
 
-        score_text = f"SCORE: {self.score:9}"
+        score_text = f"COINS: {self.score:9}"
         arcade.draw_text(
             score_text,
             SCREEN_WIDTH - 110,
