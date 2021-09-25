@@ -216,7 +216,7 @@ class SnakeShooter(arcade.View):
             delta_time (float): Time since the last update
         """
         # Check for collision
-        if self.player.collides_with_list(self.enemies_list):
+        if self.player.collides_with_list(self.enemies_list) or self.score < 0:
             # TODO create end game popup
             arcade.close_window()
 
