@@ -126,7 +126,6 @@ class VendorScreen(arcade.View):
 
         # on click, set variable selected_gun to selected_text
         # selected_text is defined by clicking on the boxes
-        # TODO need to return this variable back to the main game window
         @push_to_main.event("on_click")
         def on_click_push_to_main(event):  # noqa F811: doesn't work when re-defined
             self.selected_gun = available_guns[self.selected_text]

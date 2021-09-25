@@ -18,20 +18,6 @@ class PauseScreen(arcade.View):
     Will accept a passed scheduled function to "pause" with `arcade.unschedule`.
     """
 
-    # def __init__(
-    #     self,
-    #     game_view,
-    #     scheduled_function,
-    #     score,
-    # ):
-    #     super().__init__()
-    #     self.game_view = game_view
-    #     self.fill_color = arcade.make_transparent_color(
-    #         arcade.color.WHITE, transparency=100
-    #     )
-    #     self.scheduled_function = scheduled_function
-    #     arcade.unschedule(self.scheduled_function)
-    #     self.score = score
     def __init__(
         self,
         game_view,
@@ -110,9 +96,6 @@ class PauseScreen(arcade.View):
         )
 
         self.manager.draw()
-
-    # def on_click_start(self, event):
-    #     print("Start:", event)
 
     def on_key_press(self, symbol, modifiers):
         """Handle options to quit or resume."""

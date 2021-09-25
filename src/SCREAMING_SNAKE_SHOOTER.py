@@ -48,14 +48,11 @@ class SnakeShooter(arcade.View):
 
     def setup(self):
         """Set up the game."""
-        # placeholder for the background, choosing a default color
         arcade.set_background_color(arcade.color.XANADU)
 
-        # placeholder for the player, using built in space ship for now
         ship_image = ":resources:images/space_shooter/playerShip1_blue.png"
         self.player = arcade.Sprite(ship_image, PLAYER_SCALE)
 
-        # self.gun = Gun("py-90", scale=0.5, angle=90)
         self.equipped_gun.bottom = 15
         self.equipped_gun.center_x = self.player.center_x - 10
 
@@ -71,7 +68,6 @@ class SnakeShooter(arcade.View):
         self.score = 0
 
         # Scheduling Functions
-        # TODO need to add some logic to define when / how to "spawn" enemies
         # schedule accepts an addition function for adding a sprite
         # and a time between adding enemies
         arcade.schedule(self.add_enemy, 0.5)
@@ -83,7 +79,6 @@ class SnakeShooter(arcade.View):
         params:
             delta_time (float): How much time has passed since the last call
         """
-        # placeholder for enemy, using built in bee for now
         error = generate_error()
         enemy = FlyingEnemy(
             error.health, f"src/images/{error.error_type.value}_bug.png", error.scale
@@ -108,12 +103,10 @@ class SnakeShooter(arcade.View):
     def add_bullet(self, start_position):
         """Add a bullet when space bar is pressed."""
 
-        # placeholder for bullet
         bullet_image = ":resources:images/space_shooter/laserBlue01.png"
         bullet = arcade.Sprite(bullet_image, DEFAULT_SCALE)
         bullet.angle = 90.0
         bullet.bottom = self.player.top
-        # how to add more bullets?
         bullet.center_x = start_position
 
         bullet.velocity = (0, 400)
@@ -139,12 +132,6 @@ class SnakeShooter(arcade.View):
             arcade.close_window()
 
         if symbol == arcade.key.P:
-            # show pause screen
-            # pause = PauseScreen(
-            #     self,
-            #     self.add_enemy,
-            #     self.score,
-            # )
             pause = PauseScreen(self)
             self.window.show_view(pause)
 
@@ -188,15 +175,6 @@ class SnakeShooter(arcade.View):
             symbol (int): Which key was pressed
             modifiers (int): Which modifiers were pressed
         """
-        # Commenting out for now, should the player be able to move up or down?
-        # if (
-        #     symbol == arcade.key.W
-        #     or symbol == arcade.key.S
-        #     or symbol == arcade.key.UP
-        #     or symbol == arcade.key.DOWN
-        # ):
-        #     self.player.change_y = 0
-
         if (
             symbol == arcade.key.A
             or symbol == arcade.key.D
@@ -238,13 +216,6 @@ class SnakeShooter(arcade.View):
             sprite.center_y = int(sprite.center_y + sprite.change_y * delta_time)
 
         # Check player position
-        # commenting out the top and bottom for now
-        # this is where a "box" of movement would be defined
-        # if self.player.top > self.height:
-        #     self.player.top = self.height
-        # if self.player.bottom < 0:
-        #     self.player.bottom = 0
-        # set left and right bounds
         if self.player.right > SCREEN_WIDTH:
             self.player.right = SCREEN_WIDTH
         if self.player.left < 0:
