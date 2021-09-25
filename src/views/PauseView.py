@@ -1,7 +1,10 @@
 import os
 
 import arcade
+import arcade.gui
 from dotenv import load_dotenv
+
+from src.views.VendorView import VendorScreen
 
 load_dotenv()
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
@@ -30,9 +33,32 @@ class PauseScreen(arcade.View):
         arcade.unschedule(self.scheduled_function)
         self.score = score
 
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        self.v_box = arcade.gui.UIBoxLayout()
+
+        vendor_button = arcade.gui.UIFlatButton(text="Go to Vendor Screen", width=200)
+        self.v_box.add(vendor_button.with_space_around(bottom=20))
+
+        # Handle Clicks
+        @vendor_button.event("on_click")
+        def on_click_flatbutton(event):
+            vendor_view = VendorScreen(self, self.score)
+            self.window.show_view(vendor_view)
+
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=self.v_box,
+            )
+        )
+
     def on_draw(self):
         """Create a pause menu with options to quit or resume."""
         self.game_view.on_draw()
+
         arcade.draw_lrtb_rectangle_filled(
             left=0,
             right=SCREEN_WIDTH,
@@ -66,6 +92,11 @@ class PauseScreen(arcade.View):
             font_size=20,
             anchor_x="center",
         )
+
+        self.manager.draw()
+
+    # def on_click_start(self, event):
+    #     print("Start:", event)
 
     def on_key_press(self, symbol, modifiers):
         """Handle options to quit or resume."""

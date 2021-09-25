@@ -8,9 +8,9 @@ from src.base_classes.FlyingEnemy import FlyingEnemy
 from src.views.PauseView import PauseScreen
 
 load_dotenv()
-PLAYER_SCALE = int(os.getenv("PLAYER_SCALE"))
-ENEMY_SCALE = int(os.getenv("ENEMY_SCALE"))
-DEFAULT_SCALE = int(os.getenv("DEFAULT_SCALE"))
+PLAYER_SCALE = float(os.getenv("PLAYER_SCALE"))
+ENEMY_SCALE = float(os.getenv("ENEMY_SCALE"))
+DEFAULT_SCALE = float(os.getenv("DEFAULT_SCALE"))
 SCREEN_WIDTH = int(os.getenv("SCREEN_WIDTH"))
 SCREEN_HEIGHT = int(os.getenv("SCREEN_HEIGHT"))
 
